@@ -1,29 +1,20 @@
+var http = require("http");
 var fs = require("fs");
-var data = "Hello This is node js stream tutorial";
-var readStream = fs.createReadStream("demo.txt");
 
-readStream.on("data", function (chunk) {
-  data += chunk;
-});
+http
+  .createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/html" });
+    if (req.url == "/home" || req.url == "/") {
+      var readStream = fs.createReadStream("home.html");
+    } else if (req.url == "/blog") {
+      var readStream = fs.createReadStream("blog.html");
+    } else if (req.url == "/contact") {
+      var readStream = fs.createReadStream("contact.html");
+    } else if (req.url == "/404") {
+      var readStream = fs.createReadStream("404.html");
+    }
+    readStream.pipe(res);
+  })
+  .listen(4000);
 
-readStream.on("end", function () {
-  console.log(data);
-});
-
-readStream.on("error", function (err) {
-  console.log(err.stack);
-});
-
-// var writeData = fs.createWriteStream("test.txt");
-
-// writeData.write(data, "utf-8");
-
-// writeData.end();
-
-// writeData.on("finish", function () {
-//   console.log("Data written successfully");
-// });
-
-// writeData.on("error", function (err) {
-//   console.log(err.stack);
-// });
+console.log("Server is running on 4000");
